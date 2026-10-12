@@ -3,14 +3,49 @@
   --color-bg-raised: #0B1120;
   --color-card: #0F1626;
   --color-border: rgba(148, 163, 184, 0.14);
-  --color-text: #E8EEF8;
-  --color-text-muted: #8B98B0;
+  --color-text: #EAF4FF;
+  --color-text-muted: #8CA3C2;
   --color-solar: #FFC857;
   --color-demand: #38BDF8;
   --color-battery: #34D399;
   --color-ok: #22C55E;
   --color-warn: #F59E0B;
   --color-danger: #EF4444;
+}
+
+/* Solid dark glass console panels */
+.console-panel {
+  background: rgba(7, 18, 40, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+body:not(.lite-mode) .console-panel-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.console-panel:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55),
+              0 0 16px rgba(34, 211, 238, 0.08);
+}
+
+.console-panel-danger {
+  background: rgba(28, 8, 15, 0.88);
+  border: 1px solid rgba(255, 59, 78, 0.45);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5),
+              0 0 15px rgba(255, 59, 78, 0.12);
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.font-exo {
+  font-family: 'Exo 2', sans-serif;
 }
 
 /* Tabular figures for numbers, timestamps, and units */
@@ -41,7 +76,7 @@
 }
 
 .mission-card:hover {
-  border-color: rgba(148, 163, 184, 0.22);
+  border-color: rgba(56, 189, 248, 0.4);
 }
 
 /* Telemetry caption style */

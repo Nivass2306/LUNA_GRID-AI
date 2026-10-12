@@ -1,5 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { getState, simulateSolarDrop, reset, decidePlan, isMockMode, getApiUrl, setMockScenario } from '../lib/api.js';
+import {
+  getState,
+  simulateSolarDrop,
+  simulateBlackout,
+  simulateCustom,
+  simulatePreset,
+  reset,
+  decidePlan,
+  isMockMode,
+  getApiUrl,
+  setMockScenario,
+} from '../lib/api.js';
 
 const SpacegridContext = createContext(null);
 
@@ -38,8 +49,8 @@ export const SpacegridProvider = ({ children }) => {
     }
   }, []);
 
-  // Action: Trigger 70% solar drop
-  const handleSolarDrop = async (drop = 0.7) => {
+  // Action: Trigger solar drop
+  const handleSolarDrop = async () => {
     try {
       setReplanning(true);
       setError(null);
@@ -48,14 +59,80 @@ export const SpacegridProvider = ({ children }) => {
       setEdgeFlash(true);
       setTimeout(() => setEdgeFlash(false), 850);
 
-      const updated = await simulateSolarDrop(drop);
+      const updated = await simulateSolarDrop();
       setState(updated);
+      return updated;
     } catch (err) {
       console.error('Failed to simulate solar drop:', err);
       setError({
         message: err.message || 'Simulation error',
         url: getApiUrl(),
       });
+      throw err;
+    } finally {
+      setReplanning(false);
+    }
+  };
+
+  // Action: Trigger severe blackout
+  const handleBlackout = async () => {
+    try {
+      setReplanning(true);
+      setError(null);
+
+      setEdgeFlash(true);
+      setTimeout(() => setEdgeFlash(false), 850);
+
+      const updated = await simulateBlackout();
+      setState(updated);
+      return updated;
+    } catch (err) {
+      console.error('Failed to simulate blackout:', err);
+      setError({
+        message: err.message || 'Blackout simulation error',
+        url: getApiUrl(),
+      });
+      throw err;
+    } finally {
+      setReplanning(false);
+    }
+  };
+
+  // Action: Trigger custom scenario
+  const handleCustomScenario = async (params) => {
+    try {
+      setReplanning(true);
+      setError(null);
+
+      setEdgeFlash(true);
+      setTimeout(() => setEdgeFlash(false), 850);
+
+      const updated = await simulateCustom(params);
+      setState(updated);
+      return updated;
+    } catch (err) {
+      console.error('Failed to simulate custom scenario:', err);
+      throw err;
+    } finally {
+      setReplanning(false);
+    }
+  };
+
+  // Action: Trigger scenario preset
+  const handlePresetScenario = async (scenarioId) => {
+    try {
+      setReplanning(true);
+      setError(null);
+
+      setEdgeFlash(true);
+      setTimeout(() => setEdgeFlash(false), 850);
+
+      const updated = await simulatePreset(scenarioId);
+      setState(updated);
+      return updated;
+    } catch (err) {
+      console.error('Failed to simulate preset scenario:', err);
+      throw err;
     } finally {
       setReplanning(false);
     }
@@ -86,12 +163,14 @@ export const SpacegridProvider = ({ children }) => {
       setError(null);
       const updated = await decidePlan(decision);
       setState(updated);
+      return updated;
     } catch (err) {
       console.error('Failed to submit operator decision:', err);
       setError({
         message: err.message || 'Decision submission error',
         url: getApiUrl(),
       });
+      throw err;
     } finally {
       setReplanning(false);
     }
@@ -152,8 +231,13 @@ export const SpacegridProvider = ({ children }) => {
     isMock: isMockMode(),
     apiUrl: getApiUrl(),
     simulateSolarDrop: handleSolarDrop,
+    simulateBlackout: handleBlackout,
+    simulateCustom: handleCustomScenario,
+    simulatePreset: handlePresetScenario,
     reset: handleReset,
     decidePlan: handleDecision,
+    approvePlan: () => handleDecision('approve'),
+    rejectPlan: () => handleDecision('reject'),
     refresh: () => fetchState(null, false),
     switchScenario,
   };
