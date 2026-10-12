@@ -1,9 +1,9 @@
 import React from 'react';
-import { useSpacegridState } from '../context/SpacegridContext';
-import { Flame, RotateCcw, Loader2, Sparkles } from 'lucide-react';
+import { useLunagridState } from '../context/LunagridContext';
+import { Flame, RotateCcw, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
 
 export const ScenarioStrip = () => {
-  const { state, replanning, simulateSolarDrop, reset } = useSpacegridState();
+  const { state, replanning, simulateSolarDrop, simulateBlackout, reset } = useLunagridState();
 
   const mission = state?.mission || {};
   const alert = state?.alert || {};
@@ -29,11 +29,11 @@ export const ScenarioStrip = () => {
         </div>
 
         {/* Right: Primary Action & Reset */}
-        <div className="flex items-center gap-3 self-start md:self-center flex-shrink-0">
+        <div className="flex items-center gap-3 self-start md:self-center flex-shrink-0 flex-wrap">
           {/* Big Red Button: Simulate 70% Solar Drop */}
           <button
             type="button"
-            onClick={() => simulateSolarDrop(0.7)}
+            onClick={() => simulateSolarDrop()}
             disabled={replanning}
             aria-busy={replanning}
             className={`relative group inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-heading font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-danger focus:ring-offset-2 focus:ring-offset-bg ${
@@ -55,6 +55,19 @@ export const ScenarioStrip = () => {
                 <span>Simulate 70% Solar Drop</span>
               </>
             )}
+          </button>
+
+          {/* Blackout button */}
+          <button
+            type="button"
+            onClick={() => simulateBlackout()}
+            disabled={replanning}
+            aria-busy={replanning}
+            className="relative group inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-heading font-semibold text-sm transition-all duration-200 bg-[#8b0000] hover:bg-[#a51010] text-white active:scale-95 border border-[#FF3B4E]/40 disabled:opacity-50"
+            title="Trigger severe blackout emergency"
+          >
+            <AlertTriangle className="w-4 h-4 text-white" aria-hidden="true" />
+            <span>Blackout</span>
           </button>
 
           {/* Ghost Button: Reset */}

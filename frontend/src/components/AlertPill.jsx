@@ -8,14 +8,16 @@ export const AlertPill = ({ level, title }) => {
   let Icon = ShieldCheck;
   let defaultText = 'NOMINAL';
 
-  if (normLevel === 'red' || normLevel === 'critical') {
-    colorClasses = 'bg-danger/15 text-danger border-danger/40';
-    Icon = AlertOctagon;
-    defaultText = 'CRITICAL';
-  } else if (normLevel === 'yellow' || normLevel === 'warn' || normLevel === 'watch') {
+  const normUpper = (title || '').toUpperCase();
+
+  if (normUpper === 'SHORTAGE' || normLevel === 'yellow' || normLevel === 'warn' || normLevel === 'watch') {
     colorClasses = 'bg-warn/15 text-warn border-warn/40';
     Icon = AlertTriangle;
-    defaultText = 'WATCH';
+    defaultText = 'SHORTAGE';
+  } else if (normUpper === 'UNSAFE' || normUpper === 'CRITICAL' || normLevel === 'red' || normLevel === 'critical') {
+    colorClasses = 'bg-danger/15 text-danger border-danger/40';
+    Icon = AlertOctagon;
+    defaultText = normUpper === 'UNSAFE' ? 'UNSAFE' : 'CRITICAL';
   }
 
   const displayText = title || defaultText;

@@ -1,5 +1,5 @@
 /**
- * Formatting utilities for SPACEGRID AI mission control telemetry
+ * Formatting utilities for LUNAGRID AI mission control telemetry
  */
 
 export const formatKw = (val) => {
@@ -12,9 +12,26 @@ export const formatKwh = (val) => {
   return `${Number(val).toFixed(1)} kWh`;
 };
 
+export const formatSurvival = (val, { includeUnit = true } = {}) => {
+  if (val === null || val === undefined || isNaN(val)) {
+    return 'Sustained';
+  }
+  const n = Number(val);
+  if (n <= 0.001) {
+    return '0 h (unsafe)';
+  }
+  return includeUnit ? `${n.toFixed(1)} h` : n.toFixed(1);
+};
+
 export const formatHours = (val) => {
-  if (val === null || val === undefined || isNaN(val)) return '— h';
-  return `${Number(val).toFixed(1)} h`;
+  return formatSurvival(val, { includeUnit: true });
+};
+
+export const formatNumberOrDash = (val, decimals = 1, suffix = '') => {
+  if (val === null || val === undefined || isNaN(val)) {
+    return '--';
+  }
+  return `${Number(val).toFixed(decimals)}${suffix ? ` ${suffix}` : ''}`;
 };
 
 export const formatUtcTime = (isoString) => {

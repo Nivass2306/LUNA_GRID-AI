@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { Battery, Zap, Shield, AlertTriangle } from 'lucide-react';
 import { AnimatedNumber } from './AnimatedNumber';
 
 export const BatteryGauge = () => {
-  const { state } = useSpacegridState();
+  const { state } = useLunagridState();
 
   const battery = state?.battery || {
     soc_kwh: 8.5,

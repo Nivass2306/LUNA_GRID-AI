@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { TopBar } from '../components/TopBar';
 import { UnsafeBanner } from '../components/UnsafeBanner';
 import { ScenarioStrip } from '../components/ScenarioStrip';
@@ -14,7 +14,7 @@ import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { AlertTriangle } from 'lucide-react';
 
 export const DashboardPage = () => {
-  const { state, loading, error, edgeFlash } = useSpacegridState();
+  const { state, loading, error, edgeFlash } = useLunagridState();
 
   const alert = state?.alert || {};
   const isLifeSupportUnsafe = alert.life_support_ok === false;
@@ -22,7 +22,7 @@ export const DashboardPage = () => {
   const isCriticalWarning = alert.level === 'red' && alert.life_support_ok === true;
 
   return (
-    <div className={`min-h-screen spacegrid-pattern flex flex-col relative transition-all duration-300 ${
+    <div className={`min-h-screen lunagrid-pattern flex flex-col relative transition-all duration-300 ${
       edgeFlash ? 'animate-edge-flash' : ''
     }`}>
       {/* 1. Top Navigation Bar */}
@@ -90,7 +90,7 @@ export const DashboardPage = () => {
       <footer className="w-full border-t border-border/80 bg-bg-raised/80 py-3 px-4 text-center text-xs text-text-muted">
         <div className="max-w-[1920px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="font-mono text-[11px]">
-            SPACEGRID AI · Autonomous Energy Distribution Advisor
+            LUNAGRID AI · Autonomous Energy Distribution Advisor
           </p>
           <p className="text-[11px] text-text-muted/80">
             Software prototype. Not connected to real habitat hardware.

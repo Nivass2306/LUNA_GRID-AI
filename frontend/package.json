@@ -1,5 +1,5 @@
 {
-  "name": "spacegrid-ai-frontend",
+  "name": "lunagrid-ai-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/exo-2": "^5.3.0",
     "@fontsource/inter": "^5.1.0",
-    "@fontsource/jetbrains-mono": "^5.1.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/orbitron": "^5.3.0",
     "@fontsource/space-grotesk": "^5.1.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",

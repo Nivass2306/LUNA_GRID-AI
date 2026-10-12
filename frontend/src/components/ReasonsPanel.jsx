@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { Shield, Home, Radio, Microscope, Truck, CheckCircle2 } from 'lucide-react';
 import { OperatorDecision } from './OperatorDecision';
 
@@ -21,7 +21,7 @@ const getLoadIcon = (id) => {
 };
 
 export const ReasonsPanel = () => {
-  const { state } = useSpacegridState();
+  const { state } = useLunagridState();
 
   const loads = state?.loads || [];
   const risk = state?.risk || {};

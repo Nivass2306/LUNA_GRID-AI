@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { Check, X, ShieldCheck, ShieldAlert, Sparkles, Scale } from 'lucide-react';
 import { AnimatedNumber } from './AnimatedNumber';
 
@@ -12,7 +12,7 @@ const LOAD_COLORS = {
 };
 
 export const PolicyComparison = () => {
-  const { state } = useSpacegridState();
+  const { state } = useLunagridState();
 
   const comparison = state?.comparison || [];
   const totalBaseDemand = Number(state?.power?.demand_kw || 8.0);
@@ -56,7 +56,7 @@ export const PolicyComparison = () => {
       {/* Comparison Rows */}
       <div className="space-y-3.5">
         {comparison.map((item) => {
-          const isSpacegrid = item.policy === 'spacegrid';
+          const isLunagrid = (item.policy === 'lunagrid' || item.policy === 'spacegrid');
           const allocations = item.allocations || {};
           const unmetKw = Number(item.unmet_kw || 0);
 
@@ -68,21 +68,21 @@ export const PolicyComparison = () => {
             <div
               key={item.policy}
               className={`p-3 rounded-xl border transition-all ${
-                isSpacegrid
+                isLunagrid
                   ? 'bg-sky-950/20 border-demand/40 shadow-glow'
                   : 'bg-bg-raised/50 border-border/70 hover:bg-bg-raised/70'
               }`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-2">
-                {/* Policy Label & Spacegrid Tag */}
+                {/* Policy Label & Lunagrid Tag */}
                 <div className="flex items-center gap-2">
-                  {isSpacegrid && (
+                  {isLunagrid && (
                     <span className="w-2 h-2 rounded-full bg-demand animate-pulse" />
                   )}
-                  <span className={`text-xs font-heading font-semibold ${isSpacegrid ? 'text-demand font-bold text-sm' : 'text-text'}`}>
+                  <span className={`text-xs font-heading font-semibold ${isLunagrid ? 'text-demand font-bold text-sm' : 'text-text'}`}>
                     {item.label}
                   </span>
-                  {isSpacegrid && (
+                  {isLunagrid && (
                     <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-demand/20 text-demand border border-demand/40 flex items-center gap-1">
                       <Sparkles className="w-2.5 h-2.5" />
                       RECOMMENDED PLAN

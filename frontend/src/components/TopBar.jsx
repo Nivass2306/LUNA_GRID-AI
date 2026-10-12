@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { AlertPill } from './AlertPill';
+import { LifeSupportAlertIndicator } from './common/LifeSupportAlertIndicator';
 import { Sun, Moon, Orbit, Cpu, ChevronDown, ArrowLeft } from 'lucide-react';
 import { formatUtcTime } from '../lib/formatters';
 
 export const TopBar = () => {
-  const { state, isMock, switchScenario, replanning } = useSpacegridState();
+  const { state, isMock, switchScenario, replanning } = useLunagridState();
   const [clockTime, setClockTime] = useState('');
   const [scenarioMenuOpen, setScenarioMenuOpen] = useState(false);
 
@@ -33,7 +34,7 @@ export const TopBar = () => {
           <Link
             to="/"
             className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-demand/50 rounded-lg p-0.5"
-            title="Return to Spacegrid AI Overview"
+            title="Return to LunaGrid AI Overview"
           >
             <div className="w-9 h-9 rounded-lg bg-card border border-border flex items-center justify-center text-solar shadow-inner group-hover:border-demand/40 transition-colors">
               <svg
@@ -56,7 +57,7 @@ export const TopBar = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-heading font-bold text-base tracking-wider text-text group-hover:text-demand transition-colors">
-                  SPACEGRID AI
+                  LUNAGRID AI
                 </h1>
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-950/60 text-demand border border-demand/30 font-mono tracking-tight font-semibold">
                   CONSOLE
@@ -137,6 +138,9 @@ export const TopBar = () => {
 
           {/* System Alert Pill */}
           <AlertPill level={alert.level} title={alert.title} />
+
+          {/* Global Life Support Deficit Alert Indicator */}
+          <LifeSupportAlertIndicator />
 
           {/* Dev Quick Scenario Selector (Hidden unless VITE_ENABLE_DEV_SCENARIO_SWITCH === 'true') */}
           {import.meta.env.VITE_ENABLE_DEV_SCENARIO_SWITCH === 'true' && (

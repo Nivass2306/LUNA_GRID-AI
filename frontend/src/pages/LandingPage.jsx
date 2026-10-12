@@ -112,7 +112,7 @@ export const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen spacegrid-pattern text-text flex flex-col selection:bg-demand/30 selection:text-text">
+    <div className="min-h-screen lunagrid-pattern text-text flex flex-col selection:bg-demand/30 selection:text-text">
       {/* Top Navigation */}
       <nav aria-label="Global Navigation" className="w-full bg-bg-raised/95 border-b border-border sticky top-0 z-40 backdrop-blur-sm px-4 lg:px-8 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -128,7 +128,7 @@ export const LandingPage = () => {
             </div>
             <div>
               <span className="font-heading font-bold text-sm tracking-wider text-text block">
-                SPACEGRID AI
+                LUNAGRID AI
               </span>
               <span className="text-[10px] text-text-muted leading-none">
                 Lunar Habitat Energy Advisor
@@ -289,7 +289,7 @@ export const LandingPage = () => {
               Who gets power first
             </h2>
             <p className="text-xs sm:text-sm text-text-muted">
-              A strict survivability hierarchy enforced by the SPACEGRID optimizer.
+              A strict survivability hierarchy enforced by the LUNAGRID optimizer.
             </p>
           </div>
 
@@ -345,7 +345,7 @@ export const LandingPage = () => {
               If an available 5.5 kW solar-battery supply is split equally across all five loads, each system receives only 1.1 kW.
               Because <strong>Life Support requires a minimum of 3.0 kW</strong> to operate oxygen generation and cabin pressurization loops,
               an equal split deprives Life Support of 63% of its vital power. Within hours, atmospheric scrubbers stall.
-              SPACEGRID AI strictly prevents equal-split starvation by prioritizing mission survivability.
+              LUNAGRID AI strictly prevents equal-split starvation by prioritizing mission survivability.
             </p>
           </div>
         </div>
@@ -360,7 +360,7 @@ export const LandingPage = () => {
               The human stays in control
             </h2>
             <p className="text-xs sm:text-sm text-text-muted">
-              SPACEGRID AI is designed as a mission-control advisor, not an autonomous hardware actuator.
+              LUNAGRID AI is designed as a mission-control advisor, not an autonomous hardware actuator.
             </p>
           </div>
 
@@ -430,7 +430,7 @@ export const LandingPage = () => {
       <footer className="w-full bg-bg-raised/90 border-t border-border py-8 px-4 lg:px-8 mt-auto">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
           <div className="flex items-center gap-3">
-            <span className="font-heading font-bold text-text">SPACEGRID AI</span>
+            <span className="font-heading font-bold text-text">LUNAGRID AI</span>
             <span>·</span>
             <span>Lunar Habitat Energy Advisor</span>
           </div>

@@ -1,0 +1,1066 @@
+{
+  "timestamp": "2026-10-12T15:46:50Z",
+  "meta": {
+    "scenarios_count": 9,
+    "iterations_per_scenario": 10,
+    "solver": "PULP_CBC_CMD",
+    "latency_scope": "per_policy"
+  },
+  "scenarios": [
+    {
+      "scenario": "nominal",
+      "label": "Nominal operations",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 2.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 16.5,
+      "usable_battery_kwh": 13.5,
+      "battery_reserve_remaining_kwh": 13.5,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.0,
+          "battery_soc_kwh": 16.5,
+          "usable_battery_kwh": 13.5,
+          "battery_reserve_remaining_kwh": 13.5,
+          "survival_hours": null,
+          "latency_ms": {
+            "mean_ms": 0.049,
+            "p95_ms": 0.067
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.0,
+          "battery_soc_kwh": 16.5,
+          "usable_battery_kwh": 13.5,
+          "battery_reserve_remaining_kwh": 13.5,
+          "survival_hours": null,
+          "latency_ms": {
+            "mean_ms": 0.042,
+            "p95_ms": 0.084
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.0,
+          "battery_soc_kwh": 16.5,
+          "usable_battery_kwh": 13.5,
+          "battery_reserve_remaining_kwh": 13.5,
+          "survival_hours": null,
+          "latency_ms": {
+            "mean_ms": 96.513,
+            "p95_ms": 118.081
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        }
+      }
+    },
+    {
+      "scenario": "solar_drop_30",
+      "label": "Solar drop 30%",
+      "solar_kw": 4.9,
+      "usable_battery_kw": 2.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 90.32,
+          "total_unmet_kw": 0.6,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.067,
+            "p95_ms": 0.168
+          },
+          "allocations": {
+            "life_support": 2.4,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.6,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 2.2,
+          "latency_ms": {
+            "mean_ms": 0.031,
+            "p95_ms": 0.036
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.2
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.6,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 2.2,
+          "latency_ms": {
+            "mean_ms": 84.606,
+            "p95_ms": 109.784
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.2
+          }
+        }
+      }
+    },
+    {
+      "scenario": "solar_drop_50",
+      "label": "Solar drop 50%",
+      "solar_kw": 2.5,
+      "usable_battery_kw": 2.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 51.63,
+          "total_unmet_kw": 3.0,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.323,
+            "p95_ms": 1.568
+          },
+          "allocations": {
+            "life_support": 1.067,
+            "habitat": 1.067,
+            "comms": 1.067,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 80.65,
+          "total_unmet_kw": 3.0,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 2.2,
+          "latency_ms": {
+            "mean_ms": 0.034,
+            "p95_ms": 0.055
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 80.65,
+          "total_unmet_kw": 3.0,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 2.2,
+          "latency_ms": {
+            "mean_ms": 77.401,
+            "p95_ms": 105.054
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "solar_drop_70",
+      "label": "Solar drop 70%",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 2.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 32.9,
+          "total_unmet_kw": 4.6,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.03,
+            "p95_ms": 0.033
+          },
+          "allocations": {
+            "life_support": 0.68,
+            "habitat": 0.68,
+            "comms": 0.68,
+            "science": 0.68,
+            "rover": 0.68
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 54.84,
+          "total_unmet_kw": 4.6,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 2.2,
+          "latency_ms": {
+            "mean_ms": 0.031,
+            "p95_ms": 0.035
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 0.4,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 54.84,
+          "total_unmet_kw": 4.6,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 2.2,
+          "latency_ms": {
+            "mean_ms": 92.516,
+            "p95_ms": 159.434
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 0.4,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "solar_drop_90",
+      "label": "Solar drop 90%",
+      "solar_kw": 0.1,
+      "usable_battery_kw": 2.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 25.16,
+          "total_unmet_kw": 5.4,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.044,
+            "p95_ms": 0.111
+          },
+          "allocations": {
+            "life_support": 0.52,
+            "habitat": 0.52,
+            "comms": 0.52,
+            "science": 0.52,
+            "rover": 0.52
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 41.94,
+          "total_unmet_kw": 5.4,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.044,
+            "p95_ms": 0.119
+          },
+          "allocations": {
+            "life_support": 2.6,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 41.94,
+          "total_unmet_kw": 5.4,
+          "battery_soc_kwh": 8.5,
+          "usable_battery_kwh": 5.5,
+          "battery_reserve_remaining_kwh": 5.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 227.086,
+            "p95_ms": 304.668
+          },
+          "allocations": {
+            "life_support": 2.6,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "dust_storm",
+      "label": "Severe dust storm",
+      "solar_kw": 0.225,
+      "usable_battery_kw": 2.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 6.0,
+      "usable_battery_kwh": 3.0,
+      "battery_reserve_remaining_kwh": 3.0,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 26.37,
+          "total_unmet_kw": 5.275,
+          "battery_soc_kwh": 6.0,
+          "usable_battery_kwh": 3.0,
+          "battery_reserve_remaining_kwh": 3.0,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.044,
+            "p95_ms": 0.114
+          },
+          "allocations": {
+            "life_support": 0.545,
+            "habitat": 0.545,
+            "comms": 0.545,
+            "science": 0.545,
+            "rover": 0.545
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 43.95,
+          "total_unmet_kw": 5.275,
+          "battery_soc_kwh": 6.0,
+          "usable_battery_kwh": 3.0,
+          "battery_reserve_remaining_kwh": 3.0,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.028,
+            "p95_ms": 0.035
+          },
+          "allocations": {
+            "life_support": 2.725,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 43.95,
+          "total_unmet_kw": 5.275,
+          "battery_soc_kwh": 6.0,
+          "usable_battery_kwh": 3.0,
+          "battery_reserve_remaining_kwh": 3.0,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 244.005,
+            "p95_ms": 387.507
+          },
+          "allocations": {
+            "life_support": 2.725,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "low_battery",
+      "label": "Low battery reserve",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 0.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.0,
+          "battery_soc_kwh": 3.5,
+          "usable_battery_kwh": 0.5,
+          "battery_reserve_remaining_kwh": 0.5,
+          "survival_hours": null,
+          "latency_ms": {
+            "mean_ms": 0.05,
+            "p95_ms": 0.088
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.0,
+          "battery_soc_kwh": 3.5,
+          "usable_battery_kwh": 0.5,
+          "battery_reserve_remaining_kwh": 0.5,
+          "survival_hours": null,
+          "latency_ms": {
+            "mean_ms": 0.037,
+            "p95_ms": 0.064
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": true,
+          "critical_load_satisfaction_pct": 100.0,
+          "total_unmet_kw": 0.0,
+          "battery_soc_kwh": 3.5,
+          "usable_battery_kwh": 0.5,
+          "battery_reserve_remaining_kwh": 0.5,
+          "survival_hours": null,
+          "latency_ms": {
+            "mean_ms": 167.358,
+            "p95_ms": 261.48
+          },
+          "allocations": {
+            "life_support": 3.0,
+            "habitat": 2.0,
+            "comms": 1.2,
+            "science": 1.0,
+            "rover": 0.8
+          }
+        }
+      }
+    },
+    {
+      "scenario": "low_battery_drop_70",
+      "label": "70% drop with low battery reserve (~0.5 kWh usable)",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 0.5,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 13.55,
+          "total_unmet_kw": 6.6,
+          "battery_soc_kwh": 3.5,
+          "usable_battery_kwh": 0.5,
+          "battery_reserve_remaining_kwh": 0.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.026,
+            "p95_ms": 0.03
+          },
+          "allocations": {
+            "life_support": 0.28,
+            "habitat": 0.28,
+            "comms": 0.28,
+            "science": 0.28,
+            "rover": 0.28
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 22.58,
+          "total_unmet_kw": 6.6,
+          "battery_soc_kwh": 3.5,
+          "usable_battery_kwh": 0.5,
+          "battery_reserve_remaining_kwh": 0.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.026,
+            "p95_ms": 0.03
+          },
+          "allocations": {
+            "life_support": 1.4,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 22.58,
+          "total_unmet_kw": 6.6,
+          "battery_soc_kwh": 3.5,
+          "usable_battery_kwh": 0.5,
+          "battery_reserve_remaining_kwh": 0.5,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 124.422,
+            "p95_ms": 235.025
+          },
+          "allocations": {
+            "life_support": 1.4,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "blackout",
+      "label": "Blackout (solar near 0, min reserve)",
+      "solar_kw": 0.001,
+      "usable_battery_kw": 0.0,
+      "demand_kw": 8.0,
+      "battery_soc_kwh": 3.0,
+      "usable_battery_kwh": 0.0,
+      "battery_reserve_remaining_kwh": 0.0,
+      "policies": {
+        "equal_split": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 0.0,
+          "total_unmet_kw": 7.999,
+          "battery_soc_kwh": 3.0,
+          "usable_battery_kwh": 0.0,
+          "battery_reserve_remaining_kwh": 0.0,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.028,
+            "p95_ms": 0.032
+          },
+          "allocations": {
+            "life_support": 0.0,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        },
+        "fixed_rules": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 0.02,
+          "total_unmet_kw": 7.999,
+          "battery_soc_kwh": 3.0,
+          "usable_battery_kwh": 0.0,
+          "battery_reserve_remaining_kwh": 0.0,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 0.03,
+            "p95_ms": 0.047
+          },
+          "allocations": {
+            "life_support": 0.001,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        },
+        "spacegrid": {
+          "life_support_ok": false,
+          "critical_load_satisfaction_pct": 0.02,
+          "total_unmet_kw": 7.999,
+          "battery_soc_kwh": 3.0,
+          "usable_battery_kwh": 0.0,
+          "battery_reserve_remaining_kwh": 0.0,
+          "survival_hours": 0.0,
+          "latency_ms": {
+            "mean_ms": 110.611,
+            "p95_ms": 198.989
+          },
+          "allocations": {
+            "life_support": 0.001,
+            "habitat": 0.0,
+            "comms": 0.0,
+            "science": 0.0,
+            "rover": 0.0
+          }
+        }
+      }
+    }
+  ],
+  "results": [
+    {
+      "scenario": "nominal",
+      "policy": "equal_split",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 16.5,
+      "usable_battery_kwh": 13.5,
+      "battery_reserve_remaining_kwh": 13.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.0,
+      "survival_hours": null,
+      "latency_mean_ms": 0.049,
+      "latency_p95_ms": 0.067
+    },
+    {
+      "scenario": "nominal",
+      "policy": "fixed_rules",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 16.5,
+      "usable_battery_kwh": 13.5,
+      "battery_reserve_remaining_kwh": 13.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.0,
+      "survival_hours": null,
+      "latency_mean_ms": 0.042,
+      "latency_p95_ms": 0.084
+    },
+    {
+      "scenario": "nominal",
+      "policy": "spacegrid",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 16.5,
+      "usable_battery_kwh": 13.5,
+      "battery_reserve_remaining_kwh": 13.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.0,
+      "survival_hours": null,
+      "latency_mean_ms": 96.513,
+      "latency_p95_ms": 118.081
+    },
+    {
+      "scenario": "solar_drop_30",
+      "policy": "equal_split",
+      "solar_kw": 4.9,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 90.32,
+      "total_unmet_kw": 0.6,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.067,
+      "latency_p95_ms": 0.168
+    },
+    {
+      "scenario": "solar_drop_30",
+      "policy": "fixed_rules",
+      "solar_kw": 4.9,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.6,
+      "survival_hours": 2.2,
+      "latency_mean_ms": 0.031,
+      "latency_p95_ms": 0.036
+    },
+    {
+      "scenario": "solar_drop_30",
+      "policy": "spacegrid",
+      "solar_kw": 4.9,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.6,
+      "survival_hours": 2.2,
+      "latency_mean_ms": 84.606,
+      "latency_p95_ms": 109.784
+    },
+    {
+      "scenario": "solar_drop_50",
+      "policy": "equal_split",
+      "solar_kw": 2.5,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 51.63,
+      "total_unmet_kw": 3.0,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.323,
+      "latency_p95_ms": 1.568
+    },
+    {
+      "scenario": "solar_drop_50",
+      "policy": "fixed_rules",
+      "solar_kw": 2.5,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 80.65,
+      "total_unmet_kw": 3.0,
+      "survival_hours": 2.2,
+      "latency_mean_ms": 0.034,
+      "latency_p95_ms": 0.055
+    },
+    {
+      "scenario": "solar_drop_50",
+      "policy": "spacegrid",
+      "solar_kw": 2.5,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 80.65,
+      "total_unmet_kw": 3.0,
+      "survival_hours": 2.2,
+      "latency_mean_ms": 77.401,
+      "latency_p95_ms": 105.054
+    },
+    {
+      "scenario": "solar_drop_70",
+      "policy": "equal_split",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 32.9,
+      "total_unmet_kw": 4.6,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.03,
+      "latency_p95_ms": 0.033
+    },
+    {
+      "scenario": "solar_drop_70",
+      "policy": "fixed_rules",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 54.84,
+      "total_unmet_kw": 4.6,
+      "survival_hours": 2.2,
+      "latency_mean_ms": 0.031,
+      "latency_p95_ms": 0.035
+    },
+    {
+      "scenario": "solar_drop_70",
+      "policy": "spacegrid",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 54.84,
+      "total_unmet_kw": 4.6,
+      "survival_hours": 2.2,
+      "latency_mean_ms": 92.516,
+      "latency_p95_ms": 159.434
+    },
+    {
+      "scenario": "solar_drop_90",
+      "policy": "equal_split",
+      "solar_kw": 0.1,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 25.16,
+      "total_unmet_kw": 5.4,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.044,
+      "latency_p95_ms": 0.111
+    },
+    {
+      "scenario": "solar_drop_90",
+      "policy": "fixed_rules",
+      "solar_kw": 0.1,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 41.94,
+      "total_unmet_kw": 5.4,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.044,
+      "latency_p95_ms": 0.119
+    },
+    {
+      "scenario": "solar_drop_90",
+      "policy": "spacegrid",
+      "solar_kw": 0.1,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 8.5,
+      "usable_battery_kwh": 5.5,
+      "battery_reserve_remaining_kwh": 5.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 41.94,
+      "total_unmet_kw": 5.4,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 227.086,
+      "latency_p95_ms": 304.668
+    },
+    {
+      "scenario": "dust_storm",
+      "policy": "equal_split",
+      "solar_kw": 0.225,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 6.0,
+      "usable_battery_kwh": 3.0,
+      "battery_reserve_remaining_kwh": 3.0,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 26.37,
+      "total_unmet_kw": 5.275,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.044,
+      "latency_p95_ms": 0.114
+    },
+    {
+      "scenario": "dust_storm",
+      "policy": "fixed_rules",
+      "solar_kw": 0.225,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 6.0,
+      "usable_battery_kwh": 3.0,
+      "battery_reserve_remaining_kwh": 3.0,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 43.95,
+      "total_unmet_kw": 5.275,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.028,
+      "latency_p95_ms": 0.035
+    },
+    {
+      "scenario": "dust_storm",
+      "policy": "spacegrid",
+      "solar_kw": 0.225,
+      "usable_battery_kw": 2.5,
+      "battery_soc_kwh": 6.0,
+      "usable_battery_kwh": 3.0,
+      "battery_reserve_remaining_kwh": 3.0,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 43.95,
+      "total_unmet_kw": 5.275,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 244.005,
+      "latency_p95_ms": 387.507
+    },
+    {
+      "scenario": "low_battery",
+      "policy": "equal_split",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 0.5,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.0,
+      "survival_hours": null,
+      "latency_mean_ms": 0.05,
+      "latency_p95_ms": 0.088
+    },
+    {
+      "scenario": "low_battery",
+      "policy": "fixed_rules",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 0.5,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.0,
+      "survival_hours": null,
+      "latency_mean_ms": 0.037,
+      "latency_p95_ms": 0.064
+    },
+    {
+      "scenario": "low_battery",
+      "policy": "spacegrid",
+      "solar_kw": 8.8,
+      "usable_battery_kw": 0.5,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "life_support_ok": true,
+      "critical_load_satisfaction_pct": 100.0,
+      "total_unmet_kw": 0.0,
+      "survival_hours": null,
+      "latency_mean_ms": 167.358,
+      "latency_p95_ms": 261.48
+    },
+    {
+      "scenario": "low_battery_drop_70",
+      "policy": "equal_split",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 0.5,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 13.55,
+      "total_unmet_kw": 6.6,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.026,
+      "latency_p95_ms": 0.03
+    },
+    {
+      "scenario": "low_battery_drop_70",
+      "policy": "fixed_rules",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 0.5,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 22.58,
+      "total_unmet_kw": 6.6,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.026,
+      "latency_p95_ms": 0.03
+    },
+    {
+      "scenario": "low_battery_drop_70",
+      "policy": "spacegrid",
+      "solar_kw": 0.9,
+      "usable_battery_kw": 0.5,
+      "battery_soc_kwh": 3.5,
+      "usable_battery_kwh": 0.5,
+      "battery_reserve_remaining_kwh": 0.5,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 22.58,
+      "total_unmet_kw": 6.6,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 124.422,
+      "latency_p95_ms": 235.025
+    },
+    {
+      "scenario": "blackout",
+      "policy": "equal_split",
+      "solar_kw": 0.001,
+      "usable_battery_kw": 0.0,
+      "battery_soc_kwh": 3.0,
+      "usable_battery_kwh": 0.0,
+      "battery_reserve_remaining_kwh": 0.0,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 0.0,
+      "total_unmet_kw": 7.999,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.028,
+      "latency_p95_ms": 0.032
+    },
+    {
+      "scenario": "blackout",
+      "policy": "fixed_rules",
+      "solar_kw": 0.001,
+      "usable_battery_kw": 0.0,
+      "battery_soc_kwh": 3.0,
+      "usable_battery_kwh": 0.0,
+      "battery_reserve_remaining_kwh": 0.0,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 0.02,
+      "total_unmet_kw": 7.999,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 0.03,
+      "latency_p95_ms": 0.047
+    },
+    {
+      "scenario": "blackout",
+      "policy": "spacegrid",
+      "solar_kw": 0.001,
+      "usable_battery_kw": 0.0,
+      "battery_soc_kwh": 3.0,
+      "usable_battery_kwh": 0.0,
+      "battery_reserve_remaining_kwh": 0.0,
+      "life_support_ok": false,
+      "critical_load_satisfaction_pct": 0.02,
+      "total_unmet_kw": 7.999,
+      "survival_hours": 0.0,
+      "latency_mean_ms": 110.611,
+      "latency_p95_ms": 198.989
+    }
+  ]
+}

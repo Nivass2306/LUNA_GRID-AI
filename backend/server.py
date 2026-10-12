@@ -1,272 +1,505 @@
 """
-SPACEGRID AI Backend Service (Port 8000)
-Implements FastAPI-compatible REST endpoints for lunar habitat power telemetry:
-- GET /state
+server.py - LUNAGRID AI FastAPI Backend Service (Port 8000)
+
+FastAPI service for lunar habitat power telemetry:
+- GET  /health
+- GET  /state
 - POST /simulate/solar-drop
 - POST /reset
 - POST /plan/decision
-Includes simulated real-world teammate telemetry fields to test front-end normalization.
 """
 
-from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
-import time
-from datetime import datetime, timezone
-import random
+from pathlib import Path
+from typing import Any, Dict, List, Literal, Optional
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
-# Internal lunar habitat state
-current_mode = "nominal"
-operator_plan_status = "approved"
+from contextlib import asynccontextmanager
+import engine
 
-def get_forecast(mode="nominal"):
-    forecast = []
-    for h in range(24):
-        if mode == "nominal":
-            s = round(9.8 + random.uniform(-0.2, 0.4), 1)
-            d = round(7.8 + random.uniform(-0.3, 0.3), 1)
-            b = 2.5
-        elif mode == "after_drop":
-            if 2 <= h <= 9:
-                s = round(3.0 + random.uniform(-0.1, 0.2), 1)
-            elif 9 < h <= 14:
-                s = round(5.0 + random.uniform(-0.2, 0.3), 1)
-            else:
-                s = round(8.5 + random.uniform(-0.2, 0.2), 1)
-            d = round(8.0 + (0.4 if 4 <= h <= 8 else 0.0), 1)
-            b = round(max(0.5, 2.5 - (h - 2) * 0.25 if 2 <= h <= 9 else 2.5), 1)
-        else: # unsafe
-            s = 1.0
-            d = 8.2
-            b = 0.5
-        
-        forecast.append({
-            "hour": h,
-            "solar": s,                  # Teammate mismatch: 'solar' instead of 'solar_kw'
-            "demand": d,                 # Teammate mismatch: 'demand' instead of 'demand_kw'
-            "usable_battery": b,         # Teammate mismatch: 'usable_battery' instead of 'usable_battery_kw'
-            "solar_kw": s,
-            "demand_kw": d,
-            "usable_battery_kw": b
-        })
-    return forecast
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    import forecasting
+    forecasting.load_solar_model()
+    yield
 
-def build_state(mode="nominal"):
-    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    replan_ms = random.randint(34, 58) if mode != "nominal" else 19
+app = FastAPI(title="LUNAGRID AI Backend", description="LUNAGRID AI Autonomous Lunar Microgrid Decision Support", version="1.0.0", lifespan=lifespan)
 
-    if mode == "nominal":
-        return {
-            "timestamp": now_iso,
-            "mission": {
-                "mode": "moon",
-                "phase": "day",
-                "dust_factor": 0.12,
-                "scenario": "Nominal operations"
-            },
-            "power": {
-                "solar": 10.0,            # Teammate mismatch: 'solar' instead of 'solar_kw'
-                "demand": 8.0,            # Teammate mismatch: 'demand' instead of 'demand_kw'
-                "usable_battery": 2.0,    # Teammate mismatch: 'usable_battery' instead of 'usable_battery_kw'
-                "available": 12.0,        # Teammate mismatch: 'available' instead of 'available_kw'
-                "solar_kw": 10.0,
-                "demand_kw": 8.0,
-                "usable_battery_kw": 2.0,
-                "available_kw": 12.0
-            },
-            "battery": {
-                "soc": 16.5,              # Teammate mismatch: 'soc' instead of 'soc_kwh'
-                "capacity": 20.0,         # Teammate mismatch: 'capacity' instead of 'capacity_kwh'
-                "min_reserve": 3.0,       # Teammate mismatch: 'min_reserve' instead of 'min_reserve_kwh'
-                "max_discharge": 2.5,     # Teammate mismatch: 'max_discharge' instead of 'max_discharge_kw'
-                "soc_kwh": 16.5,
-                "capacity_kwh": 20.0,
-                "min_reserve_kwh": 3.0,
-                "max_discharge_kw": 2.5
-            },
-            "survival": {
-                "hours_now": 18.0,
-                "hours_before": 18.0
-            },
-            "alert": {
-                "level": "green",
-                "life_support": True,     # Teammate mismatch: 'life_support' instead of 'life_support_ok'
-                "life_support_ok": True,
-                "title": "NOMINAL",
-                "message": "Solar array nominal. All habitat sub-systems fully powered."
-            },
-            "risk": {
-                "shortage": False,        # Teammate mismatch: 'shortage' instead of 'shortage_expected'
-                "shortage_expected": False,
-                "start_hour": 0,
-                "end_hour": 0,
-                "max_deficit": 0.0,       # Teammate mismatch: 'max_deficit' instead of 'max_deficit_kw'
-                "max_deficit_kw": 0.0
-            },
-            "forecast": get_forecast("nominal"),
-            "loads": [
-                { "id": "life_support", "name": "Life support", "priority": 1, "tier": "critical", "need": 3.0, "allocated": 3.0, "need_kw": 3.0, "allocated_kw": 3.0, "status": "Protected", "reason": "Atmospheric scrubbers and thermal loops fully powered." },
-                { "id": "habitat", "name": "Habitat systems", "priority": 2, "tier": "high", "need": 2.0, "allocated": 2.0, "need_kw": 2.0, "allocated_kw": 2.0, "status": "Protected", "reason": "Internal lighting, air circulation, and recycling nominal." },
-                { "id": "comms", "name": "Communication", "priority": 3, "tier": "high", "need": 1.2, "allocated": 1.2, "need_kw": 1.2, "allocated_kw": 1.2, "status": "Protected", "reason": "High-gain Earth dish transmitting continuous telemetry." },
-                { "id": "science", "name": "Science experiments", "priority": 4, "tier": "lower", "need": 1.0, "allocated": 1.0, "need_kw": 1.0, "allocated_kw": 1.0, "status": "Protected", "reason": "Continuous core sample spectrometer runs active." },
-                { "id": "rover", "name": "Rover", "priority": 5, "tier": "lowest", "need": 0.8, "allocated": 0.8, "need_kw": 0.8, "allocated_kw": 0.8, "status": "Protected", "reason": "Pressurized rover charging pad operating at target voltage." }
-            ],
-            "comparison": [
-                { "policy": "equal_split", "label": "Equal split", "life_support_ok": False, "unmet_kw": 0.0, "allocations": { "life_support": 2.0, "habitat": 2.0, "comms": 1.2, "science": 1.0, "rover": 0.8 } },
-                { "policy": "fixed_rules", "label": "Fixed rules", "life_support_ok": True, "unmet_kw": 0.0, "allocations": { "life_support": 3.0, "habitat": 2.0, "comms": 1.2, "science": 1.0, "rover": 0.8 } },
-                { "policy": "spacegrid", "label": "SPACEGRID AI", "life_support_ok": True, "unmet_kw": 0.0, "allocations": { "life_support": 3.0, "habitat": 2.0, "comms": 1.2, "science": 1.0, "rover": 0.8 } }
-            ],
-            "plan": { "status": operator_plan_status },
-            "replan_time_ms": replan_ms,   # Teammate mismatch: 'replan_time_ms' instead of 'replan_ms'
-            "replan_ms": replan_ms
-        }
-    else: # after_drop
-        return {
-            "timestamp": now_iso,
-            "mission": {
-                "mode": "moon",
-                "phase": "day",
-                "dust_factor": 0.74,
-                "scenario": "Sudden Solar Array Obscuration (-70%)"
-            },
-            "power": {
-                "solar": 3.0,
-                "demand": 8.0,
-                "usable_battery": 2.5,
-                "available": 5.5,
-                "solar_kw": 3.0,
-                "demand_kw": 8.0,
-                "usable_battery_kw": 2.5,
-                "available_kw": 5.5
-            },
-            "battery": {
-                "soc": 8.5,
-                "capacity": 20.0,
-                "min_reserve": 3.0,
-                "max_discharge": 2.5,
-                "soc_kwh": 8.5,
-                "capacity_kwh": 20.0,
-                "min_reserve_kwh": 3.0,
-                "max_discharge_kw": 2.5
-            },
-            "survival": {
-                "hours_now": 6.0,
-                "hours_before": 18.0
-            },
-            "alert": {
-                "level": "red",
-                "life_support": True,
-                "life_support_ok": True,
-                "title": "CRITICAL",
-                "message": "Solar drop detected (-70%). Available power 5.5 kW. Habitat and Comms reduced to preserve Life Support."
-            },
-            "risk": {
-                "shortage": True,
-                "shortage_expected": True,
-                "start_hour": 2,
-                "end_hour": 9,
-                "max_deficit": 4.2,
-                "max_deficit_kw": 4.2
-            },
-            "forecast": get_forecast("after_drop"),
-            "loads": [
-                { "id": "life_support", "name": "Life support", "priority": 1, "tier": "critical", "need": 3.0, "allocated": 3.0, "need_kw": 3.0, "allocated_kw": 3.0, "status": "Protected", "reason": "Critical priority locked: O2 scrubbing and heating protected." },
-                { "id": "habitat", "name": "Habitat systems", "priority": 2, "tier": "high", "need": 2.0, "allocated": 1.3, "need_kw": 2.0, "allocated_kw": 1.3, "status": "Reduced", "reason": "Throttled lighting and aux circulation by 35%." },
-                { "id": "comms", "name": "Communication", "priority": 3, "tier": "high", "need": 1.2, "allocated": 0.9, "need_kw": 1.2, "allocated_kw": 0.9, "status": "Reduced", "reason": "Switched to low-bandwidth emergency beacon mode." },
-                { "id": "science", "name": "Science experiments", "priority": 4, "tier": "lower", "need": 1.0, "allocated": 0.3, "need_kw": 1.0, "allocated_kw": 0.3, "status": "Postponed", "reason": "Active drilling paused; sample refrigeration insulated." },
-                { "id": "rover", "name": "Rover", "priority": 5, "tier": "lowest", "need": 0.8, "allocated": 0.0, "need_kw": 0.8, "allocated_kw": 0.0, "status": "Off", "reason": "Dock charging isolated; rover on internal reserves." }
-            ],
-            "comparison": [
-                { "policy": "equal_split", "label": "Equal split", "life_support_ok": False, "unmet_kw": 2.5, "allocations": { "life_support": 1.6, "habitat": 1.4, "comms": 1.0, "science": 0.9, "rover": 0.6 } },
-                { "policy": "fixed_rules", "label": "Fixed rules", "life_support_ok": True, "unmet_kw": 2.5, "allocations": { "life_support": 3.0, "habitat": 2.0, "comms": 0.5, "science": 0.0, "rover": 0.0 } },
-                { "policy": "spacegrid", "label": "SPACEGRID AI", "life_support_ok": True, "unmet_kw": 2.5, "allocations": { "life_support": 3.0, "habitat": 1.3, "comms": 0.9, "science": 0.3, "rover": 0.0 } }
-            ],
-            "plan": { "status": operator_plan_status },
-            "replan_time_ms": replan_ms,
-            "replan_ms": replan_ms
-        }
 
-class SpacegridHandler(BaseHTTPRequestHandler):
-    def _send_cors(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+class CustomScenarioRequest(BaseModel):
+    solar_drop_pct: float = Field(..., ge=0.0, le=100.0, description="Solar drop percentage (0-100)")
+    dust_factor: Optional[float] = Field(None, ge=0.0, le=1.0, description="Dust attenuation factor (0-1)")
+    battery_soc_kwh: Optional[float] = Field(None, ge=0.0, le=20.0, description="Battery SoC in kWh (0-20)")
 
-    def do_OPTIONS(self):
-        self.send_response(204)
-        self._send_cors()
-        self.end_headers()
 
-    def do_GET(self):
-        global current_mode
-        if self.path == "/state" or self.path.startswith("/state?"):
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self._send_cors()
-            self.end_headers()
-            data = build_state(current_mode)
-            self.wfile.write(json.dumps(data).encode("utf-8"))
-        elif self.path == "/health":
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self._send_cors()
-            self.end_headers()
-            self.wfile.write(b'{"status":"ok","service":"spacegrid-backend"}')
-        else:
-            self.send_response(404)
-            self._send_cors()
-            self.end_headers()
-            self.wfile.write(b'{"detail":"Not found"}')
+class PlanDecisionRequest(BaseModel):
+    decision: Literal["approve", "reject"]
 
-    def do_POST(self):
-        global current_mode, operator_plan_status
-        content_length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(content_length) if content_length > 0 else b""
-        
-        parsed = {}
-        if body:
-            try:
-                parsed = json.loads(body.decode("utf-8"))
-            except:
-                pass
 
-        if self.path == "/simulate/solar-drop":
-            current_mode = "after_drop"
-            operator_plan_status = "pending"
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self._send_cors()
-            self.end_headers()
-            data = build_state(current_mode)
-            self.wfile.write(json.dumps(data).encode("utf-8"))
-        elif self.path == "/reset":
-            current_mode = "nominal"
-            operator_plan_status = "approved"
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self._send_cors()
-            self.end_headers()
-            data = build_state(current_mode)
-            self.wfile.write(json.dumps(data).encode("utf-8"))
-        elif self.path == "/plan/decision":
-            dec = parsed.get("decision", "approve")
-            operator_plan_status = "approved" if dec == "approve" else "rejected"
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self._send_cors()
-            self.end_headers()
-            data = build_state(current_mode)
-            self.wfile.write(json.dumps(data).encode("utf-8"))
-        else:
-            self.send_response(404)
-            self._send_cors()
-            self.end_headers()
-            self.wfile.write(b'{"detail":"Not found"}')
+class PlanProposeRequest(BaseModel):
+    solar_drop_pct: float = Field(0.0, ge=0.0, le=100.0)
+    dust_factor: Optional[float] = Field(None, ge=0.0, le=1.0)
+    battery_soc_kwh: Optional[float] = Field(None, ge=0.0, le=20.0)
+    source: str = "simulation"
 
-def run_server():
-    server_address = ("127.0.0.1", 8000)
-    httpd = HTTPServer(server_address, SpacegridHandler)
-    print("SPACEGRID Backend listening on http://127.0.0.1:8000")
-    httpd.serve_forever()
 
+class PlanPatchRequest(BaseModel):
+    proposed_kw: Optional[Dict[str, float]] = None
+    communication: Optional[float] = None
+    comms: Optional[float] = None
+    experiments: Optional[float] = None
+    science: Optional[float] = None
+    rover: Optional[float] = None
+    life_support: Optional[float] = None
+    habitat: Optional[float] = None
+
+
+class PlanApproveRequest(BaseModel):
+    operator_note: Optional[str] = None
+
+
+class PlanRejectRequest(BaseModel):
+    reason: Optional[str] = None
+
+
+
+# ---------------------------------------------------------------------------
+# 1. CORS: Allow explicit development frontend origins
+# ---------------------------------------------------------------------------
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# ---------------------------------------------------------------------------
+# Global exception handler for unhandled errors
+# ---------------------------------------------------------------------------
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"error": "EngineError", "detail": str(exc)},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Endpoints
+# ---------------------------------------------------------------------------
+
+@app.get("/health")
+def health() -> Dict[str, str]:
+    """Health check endpoint."""
+    return {"status": "ok", "service": "LUNAGRID AI Backend"}
+
+
+@app.get("/state")
+def get_state() -> Dict[str, Any]:
+    """Return current habitat telemetry and optimization state."""
+    try:
+        return engine.get_state()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "EngineError", "detail": str(exc)},
+        )
+
+
+@app.post("/simulate/solar-drop")
+def simulate_solar_drop() -> Dict[str, Any]:
+    """Trigger solar obscuration event (-70% drop => factor 0.3)."""
+    try:
+        return engine.solar_drop(0.3)
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "EngineError", "detail": str(exc)},
+        )
+
+
+@app.post("/simulate/blackout")
+def simulate_blackout() -> Dict[str, Any]:
+    """Trigger severe blackout event (life support cannot be met, red alert)."""
+    try:
+        return engine.blackout()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "EngineError", "detail": str(exc)},
+        )
+
+
+@app.post("/reset")
+def reset() -> Dict[str, Any]:
+    """Reset simulator and return nominal state."""
+    try:
+        return engine.reset()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "EngineError", "detail": str(exc)},
+        )
+
+
+@app.post("/simulate/custom")
+def simulate_custom(payload: CustomScenarioRequest) -> Dict[str, Any]:
+    """Trigger a custom disruption scenario with validated parameters."""
+    try:
+        return engine.custom_scenario(
+            solar_drop_pct=payload.solar_drop_pct,
+            dust_factor=payload.dust_factor,
+            battery_soc_kwh=payload.battery_soc_kwh,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "EngineError", "detail": str(exc)},
+        )
+
+
+@app.get("/scenarios")
+def get_scenarios() -> List[Dict[str, Any]]:
+    """Return id, name, category, description and the three inputs of each row from CSV."""
+    return engine.get_scenarios()
+
+
+@app.post("/simulate/preset/{scenario_id}")
+def simulate_preset(scenario_id: str) -> Dict[str, Any]:
+    """Applies preset row through the same path as /simulate/custom and returns normal full state."""
+    try:
+        return engine.apply_preset(scenario_id)
+    except KeyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "EngineError", "detail": str(exc)},
+        )
+
+
+@app.get("/dataset/info")
+def get_dataset_info() -> Dict[str, Any]:
+    """Return dataset metadata: file name, total rows, categories."""
+    try:
+        return engine.get_dataset_info()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "DatasetError", "detail": str(exc)},
+        )
+
+
+@app.get("/dataset/random")
+def get_dataset_random(category: Optional[str] = None) -> Dict[str, Any]:
+    """Return one random row plus its index (optionally filtered by category)."""
+    try:
+        return engine.get_dataset_random(category=category)
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "DatasetError", "detail": str(exc)},
+        )
+
+
+@app.get("/dataset/results")
+def get_dataset_results(
+    level: str = "shortage",
+    sort: str = "worst",
+    page: int = 1,
+    page_size: int = 10,
+) -> Dict[str, Any]:
+    """
+    Return paginated, sorted scenario evaluation results for a given alert level.
+    If run-all has not been executed yet, executes it automatically.
+    - level: all | safe | watch | critical | unsafe | shortage
+    - sort: worst | best | random
+    """
+    try:
+        return engine.get_dataset_results(
+            level=level,
+            sort=sort,
+            page=page,
+            page_size=page_size,
+        )
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "DatasetResultsError", "detail": str(exc)},
+        )
+
+
+@app.get("/dataset/samples")
+def get_dataset_samples() -> Dict[str, Any]:
+    """
+    Return one random representative scenario from each alert level
+    (safe, watch, critical, unsafe).
+    """
+    try:
+        return engine.get_dataset_samples()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "DatasetSamplesError", "detail": str(exc)},
+        )
+
+
+@app.get("/dataset/{index}")
+def get_dataset_by_index(index: int) -> Dict[str, Any]:
+    """Return one row by 0-based index (404 if out of range)."""
+    try:
+        return engine.get_dataset_by_index(index=index)
+    except IndexError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "DatasetError", "detail": str(exc)},
+        )
+
+
+@app.post("/simulate/dataset/run-all")
+def simulate_dataset_run_all() -> Dict[str, Any]:
+    """
+    Evaluates all rows in chunks of 500 using the exact manual simulation engine.
+    Returns only summary statistics (safe/watch/critical/unsafe counts, % life support OK,
+    average survival hours, 10 worst scenarios, and 50-row engine validation check).
+    """
+    try:
+        return engine.run_all_dataset(chunk_size=500)
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "DatasetSimulationError", "detail": str(exc)},
+        )
+
+
+@app.get("/benchmark")
+def get_benchmark() -> Dict[str, Any]:
+    """Return benchmark suite results, running suite if not yet generated."""
+    json_path = Path(__file__).resolve().parent / "results" / "benchmark.json"
+    if json_path.exists():
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+
+    import benchmark
+    return benchmark.run_benchmark()
+
+
+
+@app.get("/model/info")
+def get_model_info() -> Dict[str, Any]:
+    """Return metrics file contents and metadata for the offline-trained XGBoost model."""
+    import forecasting
+    try:
+        return forecasting.get_model_info()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "ModelInfoError", "detail": str(exc)},
+        )
+
+
+@app.get("/forecast")
+def get_forecast(hours: int = 6, horizon: Optional[int] = None, model: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Return power forecast arrays and shortage window.
+    Shortage window: hours where demand > forecast solar + usable battery
+    (start_hour, end_hour, peak_deficit_kw). Returns null if no shortage.
+    """
+    import simulator
+    import forecasting
+    try:
+        n_hours = horizon if horizon is not None else hours
+        if model == "xgboost":
+            return forecasting.generate_power_forecast(sim=simulator.sim, n_hours=n_hours)
+        return forecasting.generate_baseline_forecast(sim=simulator.sim, n_hours=n_hours)
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "ForecastError", "detail": str(exc)},
+        )
+
+
+@app.post("/plan/decision")
+def plan_decision(payload: PlanDecisionRequest) -> Dict[str, Any]:
+    """Record operator plan decision ('approve' or 'reject')."""
+    try:
+        return engine.plan_decision(payload.decision)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "EngineError", "detail": str(exc)},
+        )
+
+
+@app.get("/plan/horizon")
+def get_plan_horizon() -> Dict[str, Any]:
+    """24-hour battery-aware horizon plan with multi-period optimization and naive comparison."""
+    try:
+        return engine.get_horizon_plan()
+    except Exception as exc:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"error": "HorizonPlanError", "detail": str(exc)},
+        )
+
+
+@app.post("/plan/propose")
+def plan_propose(payload: PlanProposeRequest) -> Dict[str, Any]:
+    """Run optimizer for given scenario inputs and store as pending proposal without changing active plan."""
+    import approval
+    try:
+        return approval.create_proposal(
+            solar_drop_pct=payload.solar_drop_pct,
+            dust_factor=payload.dust_factor,
+            battery_soc_kwh=payload.battery_soc_kwh,
+            source=payload.source,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        )
+
+
+@app.get("/plan/pending")
+def plan_get_pending() -> Optional[Dict[str, Any]]:
+    """Return current pending proposal awaiting operator review, or null."""
+    import approval
+    return approval.get_pending_plan()
+
+
+@app.get("/plan/active")
+def plan_get_active() -> Dict[str, Any]:
+    """Return the active plan currently in force on the microgrid."""
+    import approval
+    return approval.get_active_plan()
+
+
+@app.patch("/plan/pending")
+def plan_patch_pending(payload: PlanPatchRequest) -> Dict[str, Any]:
+    """
+    Update editable secondary load kW values in the pending proposal.
+    Rejects any modification to permanent locked loads (life_support, habitat) with HTTP 422.
+    """
+    import approval
+    patch_dict = {}
+    if payload.proposed_kw:
+        patch_dict.update(payload.proposed_kw)
+    for field in ("communication", "comms", "experiments", "science", "rover", "life_support", "habitat"):
+        val = getattr(payload, field, None)
+        if val is not None:
+            patch_dict[field] = val
+
+    try:
+        return approval.update_pending_proposal(patch_dict)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        )
+
+
+@app.post("/plan/{plan_id}/approve")
+def plan_approve(plan_id: str, payload: PlanApproveRequest = PlanApproveRequest()) -> Dict[str, Any]:
+    """
+    Approve pending proposal, promoting it to active_plan and recording an audit event.
+    Refuses approval with 422 if proposal is blocked or ID mismatch.
+    """
+    import approval
+    try:
+        approved = approval.approve_proposal(plan_id, payload.operator_note)
+        engine.set_plan_status("approved")
+        return {"status": "approved", "plan": approved}
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        )
+
+
+@app.post("/plan/{plan_id}/reject")
+def plan_reject(plan_id: str, payload: PlanRejectRequest = PlanRejectRequest()) -> Dict[str, Any]:
+    """
+    Reject pending proposal, leaving active_plan unchanged and recording an audit event.
+    """
+    import approval
+    try:
+        rejected = approval.reject_proposal(plan_id, payload.reason)
+        engine.set_plan_status("rejected")
+        return {"status": "rejected", "plan": rejected}
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        )
+
+
+@app.get("/plan/events")
+@app.get("/events")
+def plan_events() -> List[Dict[str, Any]]:
+    """Return chronological audit event log."""
+    import approval
+    return approval.get_audit_events()
+
+
+
+
+# ---------------------------------------------------------------------------
+# Server startup
+# ---------------------------------------------------------------------------
 if __name__ == "__main__":
-    run_server()
+    import uvicorn
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=False)

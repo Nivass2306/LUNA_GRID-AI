@@ -10,7 +10,7 @@ import {
   ReferenceArea,
   ReferenceLine,
 } from 'recharts';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { AlertCircle, TrendingDown, Sun, Zap, BatteryCharging } from 'lucide-react';
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -39,10 +39,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export const ForecastChart = () => {
-  const { state } = useSpacegridState();
+  const { state } = useLunagridState();
 
   const forecast = state?.forecast || [];
   const risk = state?.risk || {};
+  const forecastModel = state?.forecast_model || { name: 'baseline', mae_kw: null };
+  const isXgb = forecastModel?.name?.toLowerCase() === 'xgboost';
   const isShortage = Boolean(risk.shortage_expected && risk.end_hour > risk.start_hour);
 
   return (
@@ -50,12 +52,25 @@ export const ForecastChart = () => {
       {/* Top Header & Legend */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <h2 className="font-heading font-bold text-sm tracking-wide text-text uppercase">
               Forecast & Risk Horizon
             </h2>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-bg-raised text-text-muted border border-border">
               24-HOUR ADVISORY WINDOW
+            </span>
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border inline-flex items-center gap-1.5 ${
+              isXgb
+                ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                : 'bg-slate-500/10 text-slate-300 border-slate-500/30'
+            }`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+              Forecast model: {isXgb ? 'XGBoost' : 'Baseline'}
+              {forecastModel?.mae_kw != null && (
+                <span className="opacity-90">
+                  · MAE {Number(forecastModel.mae_kw).toFixed(2)} kW on held-out data
+                </span>
+              )}
             </span>
           </div>
           <p className="text-xs text-text-muted mt-0.5">
@@ -67,7 +82,11 @@ export const ForecastChart = () => {
         <div className="flex flex-wrap items-center gap-3 text-xs">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-2 rounded-sm bg-solar/40 border border-solar" />
-            <span className="text-text-muted text-[11px]">Solar (PV)</span>
+            <span className="text-text-muted text-[11px]">{isXgb ? 'XGBoost Solar' : 'Solar (PV)'}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-0.5 border-b border-dashed border-slate-400" />
+            <span className="text-text-muted text-[11px]">Baseline</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-0.5 bg-demand" />
@@ -171,6 +190,18 @@ export const ForecastChart = () => {
                 }}
               />
             )}
+
+            {/* Baseline Yesterday Comparison (Thin Dashed Slate Line) */}
+            <Line
+              type="monotone"
+              dataKey="baseline_solar_kw"
+              name="Baseline (Yesterday)"
+              stroke="#94A3B8"
+              strokeWidth={1.5}
+              strokeDasharray="3 3"
+              dot={false}
+              isAnimationActive={false}
+            />
 
             {/* Solar Gold Area */}
             <Area

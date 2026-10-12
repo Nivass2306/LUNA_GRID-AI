@@ -1,9 +1,9 @@
 import React from 'react';
 import { WifiOff, RotateCcw, Database } from 'lucide-react';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 
 export const OfflineFallback = () => {
-  const { error, refresh, switchScenario } = useSpacegridState();
+  const { error, refresh, switchScenario } = useLunagridState();
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center p-6">
@@ -14,7 +14,7 @@ export const OfflineFallback = () => {
 
         <div>
           <h2 className="font-heading font-bold text-lg text-text">
-            Can't reach the SPACEGRID backend
+            Can't reach the LUNAGRID backend
           </h2>
           <p className="text-xs text-text-muted mt-1 leading-relaxed">
             {error?.message || 'The mission-control advisory telemetry stream failed to establish a handshake with the FastAPI service.'}

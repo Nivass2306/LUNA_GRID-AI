@@ -1,4 +1,4 @@
-// High-fidelity mock fixtures adhering strictly to the SPACEGRID AI JSON contract
+// High-fidelity mock fixtures adhering strictly to the LUNAGRID AI JSON contract
 
 const generate24hForecast = (mode = 'nominal') => {
   const forecast = [];
@@ -158,7 +158,7 @@ export const nominalState = {
     },
     {
       policy: "spacegrid",
-      label: "SPACEGRID AI",
+      label: "LUNAGRID AI",
       life_support_ok: true,
       unmet_kw: 0.0,
       allocations: {
@@ -294,7 +294,7 @@ export const afterDropState = {
     },
     {
       policy: "spacegrid",
-      label: "SPACEGRID AI",
+      label: "LUNAGRID AI",
       life_support_ok: true,
       unmet_kw: 2.5,
       allocations: {
@@ -430,7 +430,7 @@ export const unsafeState = {
     },
     {
       policy: "spacegrid",
-      label: "SPACEGRID AI",
+      label: "LUNAGRID AI",
       life_support_ok: false,
       unmet_kw: 6.5,
       allocations: {

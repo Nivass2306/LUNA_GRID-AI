@@ -1,0 +1,28 @@
+{
+  "model_name": "xgboost",
+  "mae_kw": 0.3188,
+  "rmse_kw": 0.5974,
+  "baseline_mae_kw": 0.2278,
+  "baseline_rmse_kw": 0.5984,
+  "mae_reduction_pct": -39.93,
+  "rmse_reduction_pct": 0.17,
+  "train_rows": 6969,
+  "test_rows": 1743,
+  "features": [
+    "hour_sin",
+    "hour_cos",
+    "doy_sin",
+    "doy_cos",
+    "clear_sky_kw",
+    "lag_1h",
+    "lag_24h",
+    "rolling_mean_6h",
+    "rolling_mean_24h",
+    "temperature_c",
+    "relative_humidity_pct",
+    "wind_speed_ms"
+  ],
+  "horizon_hours": 24,
+  "trained_at": "2026-10-12T14:30:40Z",
+  "dataset": "NASA POWER Hourly Solar & Meteorological Data (Earth-based stand-in for lunar solar)"
+}

@@ -1,12 +1,12 @@
 import React from 'react';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { StatusBadge } from './StatusBadge';
 import { Shield, ShieldAlert, Cpu } from 'lucide-react';
 import { getTierLabel } from '../lib/formatters';
 import { AnimatedNumber } from './AnimatedNumber';
 
 export const AllocationTable = () => {
-  const { state } = useSpacegridState();
+  const { state } = useLunagridState();
 
   const loads = state?.loads || [];
   const alert = state?.alert || {};

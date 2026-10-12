@@ -1,0 +1,31 @@
+id,name,category,description,solar_loss_pct,dust_factor,battery_soc_kwh,solar_kw,usable_battery_kw,available_kw,verdict,life_support_ok,alloc_life_support,alloc_habitat,alloc_comms,alloc_science,alloc_rover,unmet_kw
+S01,Peak Solar Generation,Nominal,Clean solar panels at maximum solar irradiance,0.0,0.0,20.0,10.0,2.5,12.5,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S02,Nominal Baseline Operations,Nominal,Standard lunar noon operations with baseline dust,0.0,0.12,16.5,8.8,2.5,11.3,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S03,Nominal Low Storage,Nominal,Clear daylight operations with partially discharged battery,0.0,0.05,10.0,9.5,2.5,12.0,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S04,Light Dust Accumulation,Atmospheric Dust,Thin regolith dust film across photovoltaic panels,0.0,0.2,16.5,8.0,2.5,10.5,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S05,Moderate Dust Accumulation,Atmospheric Dust,Noticeable dust obscuration reducing solar yield,0.0,0.35,14.0,6.5,2.5,9.0,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S06,Minor Solar Tracking Loss,Solar Degradation,15% reduction in solar output due to gimbal tracking error,15.0,0.0,16.5,8.5,2.5,11.0,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S07,Moderate Solar Loss,Solar Degradation,30% solar array obscuration from terrain shadow,30.0,0.0,12.0,7.0,2.5,9.5,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S08,Half Solar Capacity,Solar Degradation,50% photovoltaic power drop under partial eclipse penumbra,50.0,0.0,10.0,5.0,2.5,7.5,SHORTAGE,True,3.0,2.0,1.2,1.0,0.3,0.5
+S09,Severe Solar Obscuration,Solar Degradation,70% sudden solar loss matching emergency drop test,70.0,0.0,8.5,3.0,2.5,5.5,SHORTAGE,True,3.0,2.0,0.5,0.0,0.0,2.5
+S10,Critical Solar Drop,Solar Degradation,85% solar panel failure requiring immediate load shedding,85.0,0.0,8.5,1.5,2.5,4.0,SHORTAGE,True,3.0,1.0,0.0,0.0,0.0,4.0
+S11,Extreme Solar Drop,Solar Degradation,90% solar reduction under deep crater transit,90.0,0.0,8.5,1.0,2.5,3.5,SHORTAGE,True,3.0,0.5,0.0,0.0,0.0,4.5
+S12,Mild Compound Disruption,Compound Disruption,20% solar drop combined with 15% dust coating,20.0,0.15,12.0,6.8,2.5,9.3,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S13,Moderate Compound Disruption,Compound Disruption,40% solar loss combined with 25% regolith dust,40.0,0.25,10.0,4.5,2.5,7.0,SHORTAGE,True,3.0,2.0,1.2,0.8,0.0,1.0
+S14,Severe Compound Disruption,Compound Disruption,60% solar drop with 30% dust attenuation,60.0,0.3,8.5,2.8,2.5,5.3,SHORTAGE,True,3.0,2.0,0.3,0.0,0.0,2.7
+S15,Dust Storm Onset,Atmospheric Dust,Electrostatic dust storm reducing solar by 60%,0.0,0.6,14.0,4.0,2.5,6.5,SHORTAGE,True,3.0,2.0,1.2,0.3,0.0,1.5
+S16,Severe Dust Storm,Atmospheric Dust,Dense surface dust storm blocking 80% sunlight,0.0,0.8,10.0,2.0,2.5,4.5,SHORTAGE,True,3.0,1.5,0.0,0.0,0.0,3.5
+S17,Violent Dust Storm,Atmospheric Dust,Violent regolith storm cutting 90% irradiance,0.0,0.9,8.5,1.0,2.5,3.5,SHORTAGE,True,3.0,0.5,0.0,0.0,0.0,4.5
+S18,Depleted Battery Margin,Battery Depletion,Solar array clear but battery near reserve limit,0.0,0.0,4.5,10.0,1.5,11.5,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S19,Reserve Boundary Operation,Battery Depletion,Battery at minimum 3.0 kWh protected reserve threshold,0.0,0.0,3.0,10.0,0.0,10.0,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0
+S20,Depleted Battery Solar Shortage,Battery Depletion,60% solar drop with battery at protected reserve,60.0,0.0,3.0,4.0,0.0,4.0,SHORTAGE,True,3.0,1.0,0.0,0.0,0.0,4.0
+S21,Total Blackout Crisis,Extreme Hazard,Near-total solar failure and fully depleted usable battery,99.0,0.0,3.0,0.1,0.0,0.1,UNSAFE,False,0.1,0.0,0.0,0.0,0.0,7.9
+S22,Deep Night Passage,Extreme Hazard,Full lunar night with zero solar output and nominal battery,100.0,0.0,16.5,0.0,2.5,2.5,UNSAFE,False,2.5,0.0,0.0,0.0,0.0,5.5
+S23,Night Passage Low Battery,Extreme Hazard,Night with 6 kWh battery allowing life support only,100.0,0.0,6.0,0.0,2.5,2.5,UNSAFE,False,2.5,0.0,0.0,0.0,0.0,5.5
+S24,Eclipse Ingress,Eclipse Events,Penumbra entry with 45% solar drop and good battery,45.0,0.1,15.0,4.95,2.5,7.45,SHORTAGE,True,3.0,2.0,1.2,1.0,0.25,0.55
+S25,Totality Ingress,Eclipse Events,Solar totality with 95% obscuration and 7.5 kWh battery,95.0,0.0,7.5,0.5,2.5,3.0,SHORTAGE,True,3.0,0.0,0.0,0.0,0.0,5.0
+S26,Sub-Critical Life Support,Extreme Hazard,Available power marginally insufficient for life support (2.8 kW),75.0,0.0,3.3,2.5,0.3,2.8,UNSAFE,False,2.8,0.0,0.0,0.0,0.0,5.2
+S27,Exact Life Support Threshold,Edge Conditions,Available power exactly at 3.0 kW Life Support requirement,70.0,0.0,3.0,3.0,0.0,3.0,SHORTAGE,True,3.0,0.0,0.0,0.0,0.0,5.0
+S28,Critical Habitability Boundary,Edge Conditions,Available power at 5.0 kW (Life Support + Habitat),50.0,0.0,3.0,5.0,0.0,5.0,SHORTAGE,True,3.0,2.0,0.0,0.0,0.0,3.0
+S29,Full Critical Boundary,Edge Conditions,Available power at 6.2 kW (Life Support + Habitat + Comms),38.0,0.0,3.0,6.2,0.0,6.2,SHORTAGE,True,3.0,2.0,1.2,0.0,0.0,1.8
+S30,Sub-Nominal Full Power Boundary,Edge Conditions,Available power at 8.0 kW exact habitat total demand,20.0,0.0,3.0,8.0,0.0,8.0,SAFE,True,3.0,2.0,1.2,1.0,0.8,0.0

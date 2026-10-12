@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Animated SVG illustration for SPACEGRID AI Hero.
+ * Animated SVG illustration for LUNAGRID AI Hero.
  * Features:
  * - Curved lunar horizon with crater silhouettes
  * - Lunar habitat geodesic dome with illuminated airlock & comms antenna

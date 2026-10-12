@@ -1,9 +1,9 @@
 import React from 'react';
-import { useSpacegridState } from '../context/SpacegridContext';
+import { useLunagridState } from '../context/LunagridContext';
 import { Check, X, AlertTriangle, PhoneCall, Clock, CheckCircle2, XCircle } from 'lucide-react';
 
 export const OperatorDecision = () => {
-  const { state, replanning, decidePlan } = useSpacegridState();
+  const { state, replanning, decidePlan } = useLunagridState();
 
   const plan = state?.plan || { status: 'pending' };
   const alert = state?.alert || {};
